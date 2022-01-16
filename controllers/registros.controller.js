@@ -1,5 +1,5 @@
 const { response, request } = require("express");
-const { Registro, Producto } =require('../models');
+const { Registro } =require('../models');
 
 
 
@@ -21,17 +21,28 @@ const crearRegistro = async(req, res = response) => {
 
 }
 
+const obtenerRegistroById = async(req = request, res = response) => {
 
+    const {id} = req.params
+    const registro = await Registro.findById(id)
+                                        .populate('usuario','nombre')
+                                        .populate('producto','nombre')
+
+    res.json(registro)
+} 
 
 const obtenerRegistro = async(req = request, res = response) => {
 
-    
+    const query = {disponible : true}
+
+    const total = await Registro.countDocuments(query);
     const registros = await Registro.find()
                                         .populate('usuario','nombre')
                                         .populate('producto','usuario',)
  
     
     res.json({
+        total,
         registros
     })
 }
@@ -48,16 +59,18 @@ const actualizarRegistro = async(req = request, res = response) => {
 
     return res.status(201).json(registro)
 }
-const borrarCategoria = async(req = request, res = response) => {
+const borrarRegistro = async(req = request, res = response) => {
 
     const {id} = req.params
-    const categoriaBorrada = await Categoria.findByIdAndUpdate(id, {estado: false}, {new: true});
+    const registroBorrado = await Registro.findByIdAndUpdate(id, {disponible: false}, {new: true});
 
-    res.json( categoriaBorrada )
+    res.json( registroBorrado )
 }
 
 module.exports = {
     crearRegistro,
     obtenerRegistro,
-    actualizarRegistro
+    actualizarRegistro,
+    obtenerRegistroById,
+    borrarRegistro
 }

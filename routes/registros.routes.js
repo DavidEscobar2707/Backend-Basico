@@ -7,11 +7,15 @@ const router = Router();
 const {
     crearRegistro,
     obtenerRegistro,
-    actualizarRegistro
+    actualizarRegistro,
+    obtenerRegistroById,
+    borrarRegistro
 } = require('../controllers/registros.controller');
 const { validarJWT, validarCampos } = require('../middlewares');
 
 router.get('/', obtenerRegistro)
+
+router.get('/:id', obtenerRegistroById)
 
 router.post('/',[
     validarJWT,
@@ -24,6 +28,8 @@ router.put('/:id',[
     validarJWT,
     validarCampos
 ], actualizarRegistro)
+
+router.delete('/:id', borrarRegistro)
 
 
 
