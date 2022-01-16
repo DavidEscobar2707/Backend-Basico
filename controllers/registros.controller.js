@@ -5,10 +5,14 @@ const { Registro, Producto } =require('../models');
 
 const crearRegistro = async(req, res = response) => {
 
-    const {...body} = req.body
-
+    let {fechaFinal, fechaInicial,...body} = req.body
+    let fecha = Math.floor(Date.now());
+    fechaInicial = fecha
+    fechaFinal = fecha
     const registro = new Registro({
-        ...body
+        ...body,
+        fechaInicial,
+        fechaFinal
     });
 
     await registro.save();
@@ -32,17 +36,17 @@ const obtenerRegistro = async(req = request, res = response) => {
     })
 }
 
-const actualizarCategoria = async(req = request, res = response) => {
+const actualizarRegistro = async(req = request, res = response) => {
 
     const {id} = req.params;
-    const {pr, usuario, ...data} = req.body;
+    const { usuario, producto, ...data} = req.body;
 
-    data.nombre = data.nombre.toUpperCase();
+    data.nombre = req.producto
     data.usuario = req.usuario._id
 
-    const categoria = await Categoria.findByIdAndUpdate(id, data, { new: true })
+    const registro = await Registro.findByIdAndUpdate(id, data)
 
-    return res.json(categoria)
+    return res.status(201).json(registro)
 }
 const borrarCategoria = async(req = request, res = response) => {
 
@@ -54,5 +58,6 @@ const borrarCategoria = async(req = request, res = response) => {
 
 module.exports = {
     crearRegistro,
-    obtenerRegistro
+    obtenerRegistro,
+    actualizarRegistro
 }

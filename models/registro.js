@@ -8,6 +8,15 @@ const RegistroSchema = Schema({
         ref: 'Usuario',
         required: true
     },
+    fechaInicial: {
+      type: Date,
+      default: true
+    },
+    fechaFinal: {
+        type: Date,
+        default: true,
+        required: false
+      },
     disponible : {
         type: Boolean,
         default: true,

@@ -6,7 +6,8 @@ const router = Router();
 
 const {
     crearRegistro,
-    obtenerRegistro
+    obtenerRegistro,
+    actualizarRegistro
 } = require('../controllers/registros.controller');
 const { validarJWT, validarCampos } = require('../middlewares');
 
@@ -18,6 +19,11 @@ router.post('/',[
     check('producto','No es id de Mongo válido').isMongoId(),
     validarCampos
 ], crearRegistro)
+
+router.put('/:id',[
+    validarJWT,
+    validarCampos
+], actualizarRegistro)
 
 
 
