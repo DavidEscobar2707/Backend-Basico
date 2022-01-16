@@ -26,7 +26,6 @@ const obtenerProductoById = async(req = request, res = response) => {
 } 
 
 const crearProducto = async(req, res= response) => {
-
     const { estado, usuario, ...body}= req.body
 
     const data = {

@@ -6,20 +6,20 @@ const { check } = require('express-validator');
 const {
         validarCampos,
         validarJWT,
-        esAdminRol,
         tieneRol
 } = require('../middlewares')
 
 const { esRoleValido, correoExiste, existeUsuarioPorId, nombreUsuarioExiste } = require('../helpers/db-validators');
 
-const { usuariosGet, 
+const { usuariosGet,
         usuariosPut, 
         usuariosPost, 
-        usuariosDelete } = require('../controllers/usuarios.controllers');
+        usuariosDelete} = require('../controllers/usuarios.controllers');
 
 const router = Router();
 
 router.get('/', usuariosGet );
+
 
 router.post('/', [
         check('nombreCompleto', 'El nombre completo es obligatorio').not().isEmpty(),
