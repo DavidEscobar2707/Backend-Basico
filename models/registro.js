@@ -16,7 +16,7 @@ const RegistroSchema = Schema({
         type: Date,
         default: true,
         required: false
-      },
+    },
     disponible : {
         type: Boolean,
         default: true,

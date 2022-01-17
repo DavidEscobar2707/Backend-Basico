@@ -2,7 +2,7 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 const { crearCalificacion, 
         calificacionGet, 
-        categoriasGetByID,
+        calificacionGetByID,
         actualizarCategoria, 
         borrarCategoria} = require('../controllers/calificacion.controller');
 const { coleccionesPermitidas } = require('../helpers/db-validators');
@@ -17,7 +17,7 @@ router.get('/', calificacionGet)
 router.get('/:id',[
     check('id', 'No es un id válido').isMongoId(),
     validarCampos
-], categoriasGetByID)
+], calificacionGetByID)
 
 
 router.post('/:coleccion/:id',[

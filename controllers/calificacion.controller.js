@@ -17,14 +17,14 @@ const calificacionGet = async(req, res = response) => {
     })
 }
 
-const categoriasGetByID = async(req = request, res = response) => {
+const calificacionGetByID = async(req = request, res = response) => {
 
     const {id} = req.params
-    const categoria = await Calificacion.findById( id )
-                                        .populate('registro','producto')
-                                        .populate('registro','usuario')
+    
+    const calificacion = await Calificacion.findById( id )
+                                        .populate('registro',['producto','usuario'])
 
-    res.json(categoria)
+    res.json(calificacion)
 }
 
 
@@ -98,7 +98,7 @@ const borrarCategoria = async(req = request, res = response) => {
 module.exports = {
     crearCalificacion,
     calificacionGet,
-    categoriasGetByID,
+    calificacionGetByID,
     actualizarCategoria,
     borrarCategoria
 }
