@@ -1,56 +1,86 @@
 const { response, request } = require("express");
-const { Categoria } =require('../models')
+const { Producto, Usuario, Calificacion } =require('../models');
+const registro = require("../models/registro");
 
-const categoriasGet = async(req, res = response) => {
+const calificacionGet = async(req, res = response) => {
 
     const query = {estado : true}
 
-    const total = await Categoria.countDocuments(query);
-    const categorias = await Categoria.find(query)
-                                        .populate('usuario','nombre')
-    
+    const total = await Calificacion.countDocuments(query);
+    const calificacion = await Calificacion.find(query)
+                                        .populate('registro', ['usuario','producto'])
+                                        
+                                        
     res.json({
         total,
-        categorias
+        calificacion
     })
 }
 
 const categoriasGetByID = async(req = request, res = response) => {
 
     const {id} = req.params
-    const categoria = await Categoria.findById( id ).populate('usuario','nombre')
+    const categoria = await Calificacion.findById( id )
+                                        .populate('registro','producto')
+                                        .populate('registro','usuario')
 
     res.json(categoria)
 }
 
 
-const crearCategoria = async(req, res= response) => {
+const crearCalificacion = async(req, res= response) => {
 
-    const nombre = req.body.nombre.toUpperCase();
-    const categoriaDB = await Categoria.findOne({ nombre      })
-
-    if ( categoriaDB ) {
-        return res.status(400).json({
-            msg: `La categoria ${ categoriaDB.nombre}, ya existe`
-        })
-    }
+    const { id, coleccion } = req.params;
+    const { ...body}= req.body
 
     const data = {
-        nombre,
-        usuario: req.usuario._id
+        ...body
     }
 
-    const categoria = new Categoria ( data )
+    let modelo;
 
-    await categoria.save()
-   
+    switch ( coleccion ) {
+        case 'usuarios':
+            modelo = await Usuario.findById(id);
+            if ( !modelo ) {
+                return res.status(400).json({
+                    msg: `No existe un usuario con el id ${ id }`
+                });
+            }else {
+                const calificacion = new Calificacion ( data )
+            
+                await calificacion.save()
+
+                res.status(201).json(calificacion)
+            }
+        
+        break;
+
+        case 'productos':
+            modelo = await Producto.findById(id);
+            if ( !modelo ) {
+                return res.status(400).json({
+                    msg: `No existe un producto con el id ${ id }`
+                });
+            }else {
+                const calificacion = new Calificacion ( data )
+            
+                await calificacion.save()
+
+                res.status(201).json(calificacion)
+            }
+        
+        break;
+    
+        default:
+            return res.status(500).json({ msg: 'Se me olvidó validar esto'});
+    }
 }
 const actualizarCategoria = async(req = request, res = response) => {
 
     const {id} = req.params;
     const {estado, usuario, ...data} = req.body;
 
-    data.nombre = data.nombre.toUpperCase();
     data.usuario = req.usuario._id
 
     const categoria = await Categoria.findByIdAndUpdate(id, data, { new: true })
@@ -66,8 +96,8 @@ const borrarCategoria = async(req = request, res = response) => {
 }
 
 module.exports = {
-    crearCategoria,
-    categoriasGet,
+    crearCalificacion,
+    calificacionGet,
     categoriasGetByID,
     actualizarCategoria,
     borrarCategoria

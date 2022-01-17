@@ -1,37 +1,32 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { crearCategoria, 
-        categoriasGet, 
+const { crearCalificacion, 
+        calificacionGet, 
         categoriasGetByID,
         actualizarCategoria, 
-        borrarCategoria} = require('../controllers/categorias.controller');
-const { existeCategoriaPorId } = require('../helpers/db-validators');
+        borrarCategoria} = require('../controllers/calificacion.controller');
+const { coleccionesPermitidas } = require('../helpers/db-validators');
 
 const { validarJWT, validarCampos, esAdminRol } = require('../middlewares');
 
 const router = Router();
 
 
-router.get('/', categoriasGet)
+router.get('/', calificacionGet)
 
 router.get('/:id',[
     check('id', 'No es un id válido').isMongoId(),
     validarCampos
 ], categoriasGetByID)
 
-router.post('/' , [
-    validarJWT,
-    esAdminRol,
-    check('nombre','El nombre es obligatorio').not().isEmpty(),
-    validarCampos
-] , crearCategoria)
 
-router.put('/:id',[
+router.post('/:coleccion/:id',[
     validarJWT,
-    check('id', 'No es un id válido').isMongoId(),
-    check('nombre','El nombre es obligatorio').not().isEmpty(),
-    validarCampos
-],actualizarCategoria)
+    check('id', 'El id debe ser de mongo').isMongoId(),
+    check('coleccion').custom( c => coleccionesPermitidas( c, ['usuarios','productos'] ) ),
+    check('estrellas','estrellas son menores a 5').isNumeric(),
+    validarCampos,
+],crearCalificacion)
 
 router.delete('/:id',[
     validarJWT,

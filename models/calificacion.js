@@ -12,7 +12,7 @@ const CalificacionSchema = Schema({
         default: true,
         required: true
     },
-    calificacion: {
+    estrellas: {
         type: Number,
         default: true,
         required: true

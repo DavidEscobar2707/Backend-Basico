@@ -11,6 +11,7 @@ class Server {
 
         this.paths = {
             auth: '/api/auth',
+            calificacion: '/api/calificacion',
             categorias: '/api/categorias',
             productos: '/api/productos',
             registros: '/api/registros',
@@ -48,6 +49,7 @@ class Server {
     }
     routes () {
         this.app.use(this.paths.auth , require('../routes/auth.routes'));
+        this.app.use(this.paths.calificacion , require('../routes/calificacion.routes'));
         this.app.use(this.paths.categorias , require('../routes/categorias.routes'));
         this.app.use(this.paths.productos , require('../routes/productos.routes'));
         this.app.use(this.paths.registros , require('../routes/registros.routes'));
