@@ -33,18 +33,12 @@ const obtenerRegistroById = async(req = request, res = response) => {
 
 const obtenerRegistro = async(req = request, res = response) => {
 
-    const query = {disponible : true}
-
-    const total = await Registro.countDocuments(query);
     const registros = await Registro.find()
                                         .populate('usuario','nombre')
                                         .populate('producto','usuario',)
  
     
-    res.json({
-        total,
-        registros
-    })
+    res.json(registros)
 }
 
 const actualizarRegistro = async(req = request, res = response) => {
