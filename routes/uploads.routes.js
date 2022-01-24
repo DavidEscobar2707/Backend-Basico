@@ -5,9 +5,7 @@ const { validarCampos, validarArchivoSubir } = require('../middlewares');
 const { cargarArchivo, actualizarImagen, mostrarImagen } = require('../controllers/uploads.controller');
 const { coleccionesPermitidas } = require('../helpers');
 
-
 const router = Router();
-
 
 router.post( '/', validarArchivoSubir, cargarArchivo );
 

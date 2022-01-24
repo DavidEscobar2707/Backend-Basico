@@ -1,7 +1,7 @@
 const { response } = require("express");
 const { ObjectId } = require("mongoose").Types;
 
-const {Usuario, Categoria, Producto} = require('../models')
+const {Usuario, Producto} = require('../models')
 
 const coleccionesPermitidas = [
     'usuarios',
@@ -75,8 +75,6 @@ const buscar = (req, res= response) => {
             })
             break;
     }
-    
-
 }
 
 

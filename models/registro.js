@@ -10,12 +10,12 @@ const RegistroSchema = Schema({
     },
     fechaInicial: {
       type: Date,
-      default: true
+      default: true,
+      required: true
     },
     fechaFinal: {
         type: Date,
         default: true,
-        required: false
     },
     disponible : {
         type: Boolean,

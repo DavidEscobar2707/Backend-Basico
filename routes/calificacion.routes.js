@@ -1,38 +1,12 @@
-const { Router } = require('express');
+const {Router} = require('express');
 const { check } = require('express-validator');
-const { crearCalificacion, 
-        calificacionGet, 
-        calificacionGetByID,
-        actualizarCategoria, 
-        borrarCategoria} = require('../controllers/calificacion.controller');
-const { coleccionesPermitidas } = require('../helpers/db-validators');
+const { validarCampos} = require('../middlewares');
 
-const { validarJWT, validarCampos, esAdminRol } = require('../middlewares');
+const {crear, borrar} = require('../controllers/calificacion.controller')
 
 const router = Router();
 
-
-router.get('/', calificacionGet)
-
-router.get('/:id',[
-    check('id', 'No es un id válido').isMongoId(),
-    validarCampos
-], calificacionGetByID)
-
-
-router.post('/:coleccion/:id',[
-    validarJWT,
-    check('id', 'El id debe ser de mongo').isMongoId(),
-    check('coleccion').custom( c => coleccionesPermitidas( c, ['usuarios','productos'] ) ),
-    check('estrellas','estrellas son menores a 5').isNumeric(),
-    validarCampos,
-],crearCalificacion)
-
-router.delete('/:id',[
-    validarJWT,
-    esAdminRol,
-    check('id', 'No es un id válido').isMongoId(),
-    validarCampos,
-],borrarCategoria)
+router.post('/:coleccion/:id',crear)
+router.delete('/:coleccion/:id', borrar)
 
 module.exports = router

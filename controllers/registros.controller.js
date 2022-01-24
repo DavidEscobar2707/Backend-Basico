@@ -5,12 +5,13 @@ const { Registro } =require('../models');
 
 const crearRegistro = async(req, res = response) => {
 
-    let {fechaFinal, fechaInicial,...body} = req.body
+    let {fechaFinal, fechaInicial,...data} = req.body
     let fecha = Math.floor(Date.now());
     fechaInicial = fecha
     fechaFinal = fecha
+
     const registro = new Registro({
-        ...body,
+        ...data,
         fechaInicial,
         fechaFinal
     });

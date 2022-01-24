@@ -1,104 +1,122 @@
-const { response, request } = require("express");
-const { Producto, Usuario, Calificacion } =require('../models');
-const registro = require("../models/registro");
+const { response } = require("express");
+const { ObjectId } = require("mongoose").Types;
 
-const calificacionGet = async(req, res = response) => {
+const {Usuario, Producto} = require('../models')
 
-    const query = {estado : true}
-
-    const total = await Calificacion.countDocuments(query);
-    const calificacion = await Calificacion.find(query)
-                                        .populate('registro', ['usuario','producto'])
-                                        
-                                        
-    res.json({
-        total,
-        calificacion
-    })
-}
-
-const calificacionGetByID = async(req = request, res = response) => {
-
-    const {id} = req.params
-    
-    const calificacion = await Calificacion.findById( id )
-                                        .populate('registro',['producto','usuario'])
-
-    res.json(calificacion)
-}
+const coleccionesPermitidas = [
+    'usuarios',
+    'productos'
+];
 
 
-const crearCalificacion = async(req, res= response) => {
+const crear = async (req, res= response) => {
 
     const { id, coleccion } = req.params;
-    const { ...body}= req.body
+    const {comentario, estrella} = req.body
 
-    const data = {
-        ...body
+    if(!coleccionesPermitidas.includes( coleccion )){
+        return res.status(400).json({
+            msg: `las colecciones permitidas son: ${coleccionesPermitidas}`
+        })
     }
 
-    let modelo;
-
-    switch ( coleccion ) {
+    let modelo
+    switch (coleccion) {
         case 'usuarios':
             modelo = await Usuario.findById(id);
             if ( !modelo ) {
                 return res.status(400).json({
                     msg: `No existe un usuario con el id ${ id }`
                 });
-            }else {
-                const calificacion = new Calificacion ( data )
-            
-                await calificacion.save()
-
-                res.status(201).json(calificacion)
             }
-        
-        break;
+            
+            if(estrella <= 5) {
+                modelo.comentario.push(comentario)
+                modelo.estrella.push(estrella)
+            }
+            await modelo.save()
+            
+            res.json(modelo)
+            break;
 
         case 'productos':
             modelo = await Producto.findById(id);
             if ( !modelo ) {
                 return res.status(400).json({
-                    msg: `No existe un producto con el id ${ id }`
+                    msg: `No existe un usuario con el id ${ id }`
                 });
-            }else {
-                const calificacion = new Calificacion ( data )
-            
-                await calificacion.save()
-
-                res.status(201).json(calificacion)
             }
-        
-        break;
+            if(estrella <= 5) {
+                modelo.comentario.push(comentario)
+                modelo.estrella.push(estrella)
+            }
+            await modelo.save()
+            res.json(modelo)
+            break;
+
     
         default:
-            return res.status(500).json({ msg: 'Se me olvidó validar esto'});
+            res.status(500).json({
+                msg: 'Olvide hacer esta busqueda'
+            })
+            break;
     }
 }
-const actualizarCategoria = async(req = request, res = response) => {
+const borrar = async (req, res= response) => {
 
-    const {id} = req.params;
-    const {estado, usuario, ...data} = req.body;
+    const { id, coleccion } = req.params;
+    const {comentario, estrella} = req.body
 
-    data.usuario = req.usuario._id
+    if(!coleccionesPermitidas.includes( coleccion )){
+        return res.status(400).json({
+            msg: `las colecciones permitidas son: ${coleccionesPermitidas}`
+        })
+    }
 
-    const categoria = await Categoria.findByIdAndUpdate(id, data, { new: true })
+    let modelo
+    switch (coleccion) {
+        case 'usuarios':
+            modelo = await Usuario.findById(id);
+            if ( !modelo ) {
+                return res.status(400).json({
+                    msg: `No existe un usuario con el id ${ id }`
+                });
+            }
+            
+            if(estrella <= 5) {
+                modelo.comentario.pop(comentario)
+                modelo.estrella.pop(estrella)
+            }
+            await modelo.save()
+            
+            res.json(modelo)
+            break;
 
-    return res.json(categoria)
+        case 'productos':
+            modelo = await Producto.findByIdAndDelete(id);
+            if ( !modelo ) {
+                return res.status(400).json({
+                    msg: `No existe un usuario con el id ${ id }`
+                });
+            }
+            if(estrella <= 5) {
+                modelo.comentario.pop(comentario)
+                modelo.estrella.pop(estrella)
+            }
+            await modelo.save()
+            res.json(modelo)
+            break;
+
+    
+        default:
+            res.status(500).json({
+                msg: 'Olvide hacer esta busqueda'
+            })
+            break;
+    }
 }
-const borrarCategoria = async(req = request, res = response) => {
 
-    const {id} = req.params
-    const categoriaBorrada = await Categoria.findByIdAndUpdate(id, {estado: false}, {new: true});
-
-    res.json( categoriaBorrada )
-}
-
-module.exports = {
-    crearCalificacion,
-    calificacionGet,
-    calificacionGetByID,
-    actualizarCategoria,
-    borrarCategoria
+module.exports ={
+    crear,
+    borrar
 }

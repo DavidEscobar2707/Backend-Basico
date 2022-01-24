@@ -47,8 +47,13 @@ const ProductoSchema = Schema({
         type: Schema.Types.ObjectId,
         ref: 'Categoria',
         required: true
-    }
-    
+    },
+    comentario: {
+        type: Array,
+    },
+    estrella: [{
+        type: Number
+    }]
 
 })
 
