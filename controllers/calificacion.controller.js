@@ -1,7 +1,7 @@
 const { response } = require("express");
-const { ObjectId } = require("mongoose").Types;
 
-const {Usuario, Producto} = require('../models')
+const {Usuario, Producto} = require('../models');
+const usuario = require("../models/usuario");
 
 const coleccionesPermitidas = [
     'usuarios',
@@ -12,7 +12,7 @@ const coleccionesPermitidas = [
 const crear = async (req, res= response) => {
 
     const { id, coleccion } = req.params;
-    const {comentario, estrella} = req.body
+    const {comentario, estrella, usuario} = req.body
 
     if(!coleccionesPermitidas.includes( coleccion )){
         return res.status(400).json({
@@ -31,8 +31,11 @@ const crear = async (req, res= response) => {
             }
             
             if(estrella <= 5) {
-                modelo.comentario.push(comentario)
-                modelo.estrella.push(estrella)
+                modelo.calificacion.push({
+                    comentario: comentario,
+                    estrella: estrella,
+                    usuario: usuario
+                })
             }
             await modelo.save()
             
@@ -47,8 +50,11 @@ const crear = async (req, res= response) => {
                 });
             }
             if(estrella <= 5) {
-                modelo.comentario.push(comentario)
-                modelo.estrella.push(estrella)
+                modelo.calificacion.push({
+                    comentario: comentario,
+                    estrella: estrella,
+                    usuario: usuario
+                })
             }
             await modelo.save()
             res.json(modelo)
@@ -65,7 +71,7 @@ const crear = async (req, res= response) => {
 const borrar = async (req, res= response) => {
 
     const { id, coleccion } = req.params;
-    const {comentario, estrella} = req.body
+    const {comentario, estrella, usuario} = req.body
 
     if(!coleccionesPermitidas.includes( coleccion )){
         return res.status(400).json({
@@ -84,8 +90,11 @@ const borrar = async (req, res= response) => {
             }
             
             if(estrella <= 5) {
-                modelo.comentario.pop(comentario)
-                modelo.estrella.pop(estrella)
+                modelo.calificacion.push({
+                    comentario: comentario,
+                    estrella: estrella,
+                    usuario: usuario
+                })
             }
             await modelo.save()
             
@@ -100,8 +109,11 @@ const borrar = async (req, res= response) => {
                 });
             }
             if(estrella <= 5) {
-                modelo.comentario.pop(comentario)
-                modelo.estrella.pop(estrella)
+                modelo.calificacion.push({
+                    comentario: comentario,
+                    estrella: estrella,
+                    usuario: usuario
+                })
             }
             await modelo.save()
             res.json(modelo)

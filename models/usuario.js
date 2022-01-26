@@ -38,12 +38,13 @@ const UsuarioSchema = Schema({
         type: Boolean,
         default: true
     },
-    comentario: [{
-        type: String,
-    }],
-    estrella: [{
-        type: Number
-    }]
+    calificacion: [
+        {
+            comentario: {type: String},
+            estrella: {type: Number},
+            usuario: {type: Schema.Types.ObjectId,ref: 'Categoria'},
+        }
+    ]
 })
 UsuarioSchema.methods.toJSON = function() {
     const {__v, password, _id, ...usuario} = this.toObject();

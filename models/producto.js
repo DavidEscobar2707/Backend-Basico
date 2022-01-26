@@ -48,16 +48,14 @@ const ProductoSchema = Schema({
         ref: 'Categoria',
         required: true
     },
-    comentario: {
-        type: Array,
-    },
-    estrella: [{
-        type: Number
-    }]
-
+    calificacion: [
+        {
+            comentario: {type: String},
+            estrella: {type: Number},
+            usuario: {type: Schema.Types.ObjectId,ref: 'Categoria'},
+        }
+    ]
 })
-
-
 ProductoSchema.methods.toJSON = function() {
     const {__v, estado, ...data} = this.toObject();
     return data;
