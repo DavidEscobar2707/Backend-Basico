@@ -1,6 +1,5 @@
 const { response, request } = require("express");
 const { Producto, Usuario, Calificacion } =require('../models');
-const registro = require("../models/registro");
 
 const calificacionGet = async(req, res = response) => {
 
@@ -76,17 +75,7 @@ const crearCalificacion = async(req, res= response) => {
             return res.status(500).json({ msg: 'Se me olvidó validar esto'});
     }
 }
-const actualizarCategoria = async(req = request, res = response) => {
 
-    const {id} = req.params;
-    const {estado, usuario, ...data} = req.body;
-
-    data.usuario = req.usuario._id
-
-    const categoria = await Categoria.findByIdAndUpdate(id, data, { new: true })
-
-    return res.json(categoria)
-}
 const borrarCategoria = async(req = request, res = response) => {
 
     const {id} = req.params
